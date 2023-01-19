@@ -1,50 +1,96 @@
 package Tienda;
 
-import java.lang.reflect.Array;
-import java.sql.SQLOutput;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
         Cliente[] clientes = new Cliente[4];
-        Scanner opcion_usuario = new Scanner(System.in);
-        int respuesta_user;
+        String[] opciones = {"1. Añadir nuevo cliente", "2. Borrar cliente", "3. Buscar cliente", "4. Mostrar los clientes", "5. Salir"};
+
+        Scanner opcionUsuario = new Scanner(System.in);
+        int option;
+        int count = 0;
 
 
-        System.out.println("1. Añadir nuevo cliente");
-        System.out.println("2. Borrar cliente");
-        System.out.println("3. Buscar cliente");
-        System.out.println("4. Mostrar los clientes");
-        System.out.println("5. Salir");
-        System.out.println("Escribe una de las opciones ");
-        respuesta_user = opcion_usuario.nextInt();
-        System.out.println("Haz seleccionado la opción número " + respuesta_user);
+        while (true) {
+            verMenu(opciones);
+            option = opcionUsuario.nextInt();
+            switch (option) {
+                case 1:
+                    Cliente clienteNuevo = new Cliente();
 
-        switch (respuesta_user){
-            case 1:
-                System.out.println("Ingrese nombre: ");
-                Cliente clienteNuevo = new Cliente();
-                clienteNuevo.setNombre(opcion_usuario.nextLine());
-                opcion_usuario.nextLine();
+                    System.out.println("Ingrese nombre: ");
+                    String name = opcionUsuario.next();
+                    if(!name.equals(null) && name.matches("^[a-zA-Z]*$")){
+                        clienteNuevo.setNombre(name);
+                    }else {
+                        System.out.println("No es un posible usar el valor");
+                        System.out.println("");
+                        break;
+                    }
 
-                System.out.println("Ingrese cédula: ");
-                clienteNuevo.setCedula(opcion_usuario.nextInt());
+                    System.out.println("Ingrese cédula: ");
+                    String id = opcionUsuario.next();
+                    if(Objects.nonNull(id) && id.matches("[+-]?[0-9]+")){
+                        clienteNuevo.setCedula(Integer.parseInt(id));
+                    }else {
+                        System.out.println("No es un posible usar el valor");
+                        System.out.println("");
+                        break;
+                    }
 
-                for (int i = 0; i < clientes.length; i++){
-                    clientes[i] = clienteNuevo;
+                    clientes[count] = clienteNuevo;
+                    count = count + 1;
                     break;
-                }
+                case 2:
+                    System.out.println("Ingrese la posicion a borrar: ");
+                    int position = opcionUsuario.nextInt();
+                    if(clientes[position + 1] != null){
+                        clientes[position] = clientes[position + 1];
+                        clientes[position + 1] = null;
+                    }else{
+                        clientes[position] = null;
+                    }
+                    break;
+                case 3:
+                    System.out.println("Ingrese la cedula a buscar: ");
+                    int cedula = opcionUsuario.nextInt();
+                    try {
+                        for (int i = 0; i < clientes.length; i++) {
+                            if (clientes[i].getCedula() == cedula) {
+                                System.out.println("Cliente numero " + i + ": El cliente se llama " + clientes[i].getNombre() + " y su cedula es " + clientes[i].getCedula());
+                            }
+                        }
+                    }catch (Exception e){
+
+                    }
+                    break;
+                case 4:
+                    try {
+                        for (int i = 0; i < clientes.length; i++) {
+                            System.out.println("::::::: "+i+": El cliente se llama " + clientes[i].getNombre() + " y su cedula es " + clientes[i].getCedula() + "::::::");
+                        }
+                    } catch (Exception e) {
+
+                    }
+
+                    break;
+                case 5:
+                    System.exit(0);
 
 
-
-                break;
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-
-
+            }
         }
+    }
+
+    public static void verMenu(String[] options) {
+        for (String option : options) {
+            System.out.println(option);
+        }
+        System.out.print("Escribe una de las opciones");
+        System.out.println(" ");
     }
 
 }
